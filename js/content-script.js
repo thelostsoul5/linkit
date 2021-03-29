@@ -1,12 +1,14 @@
 console.log("linkit已加载");
+var root;
+var inner;
 document.onkeydown = function (e) {
   if (!e) {
     e = window.event;
   }
   if (e.altKey && e.key === "l") {
-    var root = createRoot();
+    root = createRoot();
     var header = createHeader(root);
-    var inner = createFrame();
+    inner = createFrame();
     var linkit = pkgDiv("linkit", inner);
 
     root.appendChild(header);
@@ -20,8 +22,10 @@ document.onkeydown = function (e) {
         if (url !== null && url !== "") {
           getSrcDoc(url, function (response) {
             inner.srcdoc = response;
-            rebaseDocument(inner.contentDocument, onClick);
-            root.style.display = "block";
+            inner.onload = function (e) {
+              rebaseDocument(inner.contentDocument, onClick);
+              root.style.display = "block";
+            };
           });
         }
       }
@@ -35,7 +39,10 @@ function onClick(event) {
   if (url !== null && url !== "") {
     getSrcDoc(url, function (response) {
       inner.srcdoc = response;
-      rebaseDocument(inner.contentDocument, onClick);
+      inner.onload = function (e) {
+        rebaseDocument(inner.contentDocument, onClick);
+        root.style.display = "block";
+      };
     });
   }
 }
