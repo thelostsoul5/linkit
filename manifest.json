@@ -1,14 +1,28 @@
 {
     "name": "linkit",
-    "version": "0.0.0.1",
+    "version": "1.0.0",
     "manifest_version": 2,
     "description": "link it.",
     "browser_action": {
-        "default_popup": "popup/popup.html"
+        "default_popup": "popup.html"
+    },
+    "background": {
+        "scripts": [
+            "js/background.js"
+        ]
     },
     "content_scripts": [
         {
-            "js": "content-scripts/content-script.js"
+            "matches": [
+                "http://*/*",
+                "https://*/*"
+            ],
+            "css": ["css/content-script.css"],
+            "js": [
+                "js/content-script.js"
+            ],
+            "all_frames": true,
+            "run_at": "document_start"
         }
     ]
 }
