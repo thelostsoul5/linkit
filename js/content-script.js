@@ -21,11 +21,13 @@ document.onkeydown = function (e) {
         var url = this.href;
         if (url !== null && url !== "") {
           getSrcDoc(url, function (response) {
-            inner.srcdoc = response;
-            inner.onload = function (e) {
-              rebaseDocument(inner.contentDocument, onClick);
-              root.style.display = "block";
-            };
+            if (response, url) {
+              inner.srcdoc = dealWithSrcdoc(response, url);
+              inner.onload = function (e) {
+                rebaseDocument(inner.contentDocument, onClick);
+                root.style.display = "block";
+              };
+            }
           });
         }
       }
@@ -38,13 +40,20 @@ function onClick(event) {
   var url = this.href;
   if (url !== null && url !== "") {
     getSrcDoc(url, function (response) {
-      inner.srcdoc = response;
-      inner.onload = function (e) {
-        rebaseDocument(inner.contentDocument, onClick);
-        root.style.display = "block";
-      };
+      if (response) {
+        inner.srcdoc = dealWithSrcdoc(response, url);
+        inner.onload = function (e) {
+          rebaseDocument(inner.contentDocument, onClick);
+          root.style.display = "block";
+        };
+      }
     });
   }
+}
+
+function dealWithSrcdoc(srcdoc, url) {
+  var base = "<base href='"+ url +"'></base>";
+  return srcdoc.replace("<head>", "<head>"+base);
 }
 
 function rebaseDocument(doc, callback) {
