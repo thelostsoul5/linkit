@@ -2,7 +2,7 @@
     "name": "linkit",
     "version": "1.0.0",
     "manifest_version": 2,
-    "description": "用于浏览网页时，在当前页面上层打开链接，展示外链页面，可以减少切换标签页和窗口的操作。It is used to open the link on the upper level of the current page when browsing the web, and display the external link page, which can reduce the operation of switching tabs and windows.",
+    "description": "用于浏览网页时，在当前页面上层打开链接，展示外链页面，可以减少切换标签页和窗口的操作。",
     "browser_action": {
         "default_popup": "popup.html",
         "default_icon": {
