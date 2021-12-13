@@ -8,30 +8,56 @@ document.onkeydown = function (e) {
     e = window.event;
   }
   if (e.altKey && e.key === "l") {
-    root = createRoot();
-    pageMax = createPageMax();
-    pageMin = createPageMin();
-    var header = createHeader(root);
-    inner = createFrame();
-    var linkit = pkgDiv("linkit", inner);
-    mask = createMask();
+    if (document.getElementById("linkit_root") == undefined) {
+      root = createRoot();
+      pageMax = createPageMax();
+      pageMin = createPageMin();
+      var header = createHeader(root);
+      inner = createFrame();
+      var linkit = pkgDiv("linkit", inner);
+      mask = createMask();
 
-    pageMax.appendChild(header);
-    pageMax.appendChild(linkit);
-    pageMin.appendChild(mask);
+      pageMax.appendChild(header);
+      pageMax.appendChild(linkit);
+      pageMin.appendChild(mask);
 
-    root.appendChild(pageMax);
-    root.appendChild(pageMin);
-    var body = document.querySelector("body");
-    body.appendChild(root);
+      root.appendChild(pageMax);
+      root.appendChild(pageMin);
+      var body = document.querySelector("body");
+      body.appendChild(root);
 
-    rebaseDocument(document, function (event) {
-      if (event.ctrlKey) {
-        onClick(event, this);
-      }
-    });
+      rebaseDocument(document, function (event) {
+        if (event.ctrlKey) {
+          onClick(event, this);
+        }
+      });
+    }
+
+    onSearch();
   }
 };
+
+function onSearch() {
+  var searchText = document.getSelection().toString();
+  if (searchText !== undefined && searchText !== "") {
+    chrome.storage.sync.get(
+      { search_engine: "https://www.baidu.com/s?ie=UTF-8&wd=%s" },
+      function (items) {
+        var url = items.search_engine.replace(/%s/, encodeURI(searchText));
+        getSrcDoc(url, function (response) {
+          if (response) {
+            inner.srcdoc = dealWithSrcdoc(response, url);
+            inner.onload = function (e) {
+              rebaseDocument(inner.contentDocument, onClick);
+              maxPage();
+              mask.innerText = searchText;
+            };
+          }
+        });
+      }
+    );
+  }
+}
 
 function onClick(event, that) {
   if (!that) {
@@ -55,8 +81,8 @@ function onClick(event, that) {
 }
 
 function dealWithSrcdoc(srcdoc, url) {
-  var base = "<base href='"+ url +"'></base>";
-  return srcdoc.replace("<head>", "<head>"+base);
+  var base = "<base href='" + url + "'></base>";
+  return srcdoc.replace("<head>", "<head>" + base);
 }
 
 function rebaseDocument(doc, callback) {
@@ -66,17 +92,18 @@ function rebaseDocument(doc, callback) {
 }
 
 function getSrcDoc(url, callback) {
+  mask.innerText = "加载中……";
   chrome.runtime.sendMessage(url, callback);
 }
 
 function createMask() {
   var mask = pkgDiv("linkit_mask");
-  mask.innerText = "ctrl + click";
+  mask.innerText = "CTRL + CLICK";
   mask.onclick = function (event) {
     if (inner.srcdoc) {
       maxPage();
     }
-  }
+  };
   return mask;
 }
 

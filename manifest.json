@@ -1,6 +1,6 @@
 {
     "name": "linkit",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "manifest_version": 2,
     "description": "用于浏览网页时，在当前页面上层打开链接，展示外链页面，可以减少切换标签页和窗口的操作。",
     "browser_action": {
@@ -28,5 +28,8 @@
             "all_frames": true,
             "run_at": "document_start"
         }
+    ],
+    "permissions": [
+        "storage"
     ]
 }
