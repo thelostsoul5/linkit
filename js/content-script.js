@@ -142,6 +142,7 @@ function createHeader(root) {
 function createFrame() {
   var inner = document.createElement("iframe");
   inner.id = "linkit_inner";
+  inner.className = "linkit_inner";
   return inner;
 }
 
